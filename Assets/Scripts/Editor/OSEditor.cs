@@ -6,12 +6,14 @@ using UnityEditor;
 [CustomEditor(typeof(VirtualOS))]
 public class OSEditor : Editor
 {
-    public override void OnInspectorGUI() {
+    public override void OnInspectorGUI()
+    {
         DrawDefaultInspector();
 
         var editor = (VirtualOS)target;
 
-        if (GUILayout.Button("Set Cam")) {
+        if (GUILayout.Button("Set Cam"))
+        {
             editor.CopyTargetCamera();
         }
     }

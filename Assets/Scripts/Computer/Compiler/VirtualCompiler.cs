@@ -319,7 +319,10 @@ public class VirtualCompiler
                     //Task tt = new Task(); //outputFunction.delFunc = /*class_instance_to_call_here.*/tt.GetType().GetMethod(outputFunctionNames[i]);
 
                     //foreach (object x in VirtualOS.Instance.availableModules) { x.GetType().GetMethod(outputFunctionNames[i]); }
-                    Array.ForEach(VirtualOS.Instance.availableModules, x => x.GetType().GetMethod(outputFunctionNames[i]));
+                    Array.ForEach(VirtualOS.Instance.availableModules, x =>
+                    {
+                        outputFunction.delFunc = x.GetType().GetMethod(outputFunctionNames[i], BindingFlags.Public);
+                    });
 
                     if (outputFunction.values.Count <= 1)
                         availableFuncsWthoutReturnV.TryGetValue(outputFunctionNames[i], out outputFunction.FunctionWithoutParam); //TODO: add function from virtualOS and invoke them from fixedturretgame

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class DoubleTurretTask : Task
 {
-
     [Header("Task settings")]
     public float timeBetweenShots = 1;
     public float enemyTravelTimeMin = .5f;
@@ -30,6 +29,8 @@ public class DoubleTurretTask : Task
     float lastShotTime;
 
     System.Random prng;
+    float chargePercent;
+    float[] inputValues = new float[4];
 
     protected override void Run(string code)
     {
@@ -40,11 +41,10 @@ public class DoubleTurretTask : Task
 
     void LateUpdate()
     {
-        float chargePercent = Mathf.Max(0, timeBetweenShots - TimeUntilCanShootAgain) / timeBetweenShots;
+        chargePercent = Mathf.Max(0, timeBetweenShots - TimeUntilCanShootAgain) / timeBetweenShots;
         chargeBar.localScale = new Vector3(chargeBar.localScale.x, chargeBar.localScale.y, chargePercent);
         if (running)
         {
-
             if (enemyA == null)
             {
                 enemyA = Instantiate(enemyPrefab, spawnA.position, spawnA.rotation);
@@ -61,7 +61,8 @@ public class DoubleTurretTask : Task
 
             if (TimeUntilCanShootAgain <= 0)
             {
-                float[] inputValues = { DstA, DstB, speedA, speedB };
+                //inputValues = new float[] { DstA, DstB, speedA, speedB };
+                inputValues[0] = DstA; inputValues[1] = DstB; inputValues[2] = speedA; inputValues[3] = speedB;
                 GenerateOutputs(inputValues);
 
                 if (outputQueue.Count > 0)
@@ -80,14 +81,14 @@ public class DoubleTurretTask : Task
                 }
             }
 
-            if (DstA <= 0)
+            if (DstA <= 0.01)
             {
                 //print ("Failed: " + currentIteration);
                 TestFailed();
                 Destroy(enemyA.gameObject);
             }
 
-            if (DstB <= 0)
+            if (DstB <= 0.01)
             {
                 //print ("Failed: " + currentIteration);
                 TestFailed();
@@ -179,8 +180,8 @@ public class DoubleTurretTask : Task
     {
         get
         {
-            float timeSinceLast = Time.time - lastShotTime;
-            return Mathf.Max(0, timeBetweenShots - timeSinceLast);
+            //float timeSinceLast = Time.time - lastShotTime;
+            return Mathf.Max(0, timeBetweenShots - Time.time - lastShotTime);
         }
     }
 

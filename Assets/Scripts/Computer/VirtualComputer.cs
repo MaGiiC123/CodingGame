@@ -2,9 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
-public class VirtualOS : MonoBehaviour
+public class VirtualComputer : MonoBehaviour
 {
+    object[] hardware;
+    object[] softwareModules;
+    object[] hardwareModules;
+
+    VirtualOS os;
+
+    void Awake()
+    {
+        SetProgram(currentProgram);
+    }
+
+    void Start()
+    {
+        os = GetComponent<VirtualOS>();
+        if (os == null)
+            os = gameObject.AddComponent<VirtualOS>();
+    }
+
+    void Update()
+    {
+        this.HandleInput();
+
+        if (needsUpdate && !Application.isPlaying)
+        {
+            needsUpdate = false;
+            SetProgram(currentProgram);
+        }
+    }
+
+    public object[] Hardware{ get; }
+    public object[] SoftwareModules { get; }
+    public object[] HardwareModules { get; }
+
+    //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public bool useTestCodeForTasks;
 
     public Camera viewCam;
@@ -18,27 +51,10 @@ public class VirtualOS : MonoBehaviour
 
     bool needsUpdate;
 
-    static VirtualOS _instance;
     Task currentTask;
 
     //TODO: put modules classes on startup inhere
     public object[] availableModules;
-
-    void Awake()
-    {
-        SetProgram(currentProgram);
-    }
-
-    void Update()
-    {
-        HandleInput();
-
-        if (needsUpdate && !Application.isPlaying)
-        {
-            needsUpdate = false;
-            SetProgram(currentProgram);
-        }
-    }
     
     void RunTask()
     {
@@ -106,31 +122,19 @@ public class VirtualOS : MonoBehaviour
         needsUpdate = true;
     }
 
-    public static VirtualOS Instance
+    public bool Active
     {
         get
         {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<VirtualOS>();
-            }
-            return _instance;
+            return this.gameObject.activeSelf;
         }
     }
 
-    public static bool Active
+    public void RegisterTask(Task task)
     {
-        get
-        {
-            return Instance != null;
-        }
-    }
-
-    public static void RegisterTask(Task task)
-    {
-        Instance.currentTask = task;
-        Instance.CopyTargetCamera();
-        Instance.RunTask();
+        this.currentTask = task;
+        this.CopyTargetCamera();
+        this.RunTask();
     }
 
     public void SetProgram(Program program)

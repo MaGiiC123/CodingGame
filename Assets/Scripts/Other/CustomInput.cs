@@ -46,6 +46,7 @@ public class CustomInput : MonoBehaviour
                     state.lastVirtualPressTime = Time.time;
                     return true;
                 }
+
             }
         }
         return false;
@@ -71,5 +72,6 @@ public class CustomInput : MonoBehaviour
         {
             this.key = key;
         }
+
     }
 }

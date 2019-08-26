@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [ExecuteInEditMode]
-public class TaskSelection : VirtualProgram
-{
+public class TaskSelection : VirtualProgram {
+
     public TMP_Text levelsUI;
     public Image caret;
     public float blinkRate = 1;
@@ -23,129 +23,101 @@ public class TaskSelection : VirtualProgram
     string levelsText;
     string[] levelLines;
 
-    void Start()
-    {
-        if (Application.isPlaying)
-        {
-            CustomInput.instance.RegisterKey(KeyCode.UpArrow);
-            CustomInput.instance.RegisterKey(KeyCode.DownArrow);
+    void Start () {
+        if (Application.isPlaying) {
+            CustomInput.instance.RegisterKey (KeyCode.UpArrow);
+            CustomInput.instance.RegisterKey (KeyCode.DownArrow);
 
-            UpdateText();
+            UpdateText ();
 
-            levelLines = levelsText.Split('\n');
+            levelLines = levelsText.Split ('\n');
         }
     }
 
-    void UpdateText()
-    {
+    void UpdateText () {
         levelsText = "";
-        for (int i = 0; i < levelNames.Length; i++)
-        {
-            levelsText += i.ToString("D3") + ": " + levelNames[i];
-            if (i != levelNames.Length - 1)
-            {
+        for (int i = 0; i < levelNames.Length; i++) {
+            levelsText += i.ToString ("D3") + ": " + levelNames[i];
+            if (i != levelNames.Length - 1) {
                 levelsText += "\n";
             }
         }
         levelsUI.text = levelsText;
     }
-
-    void Update()
-    {
-        if (!Application.isPlaying)
-        {
-            UpdateText();
+    void Update () {
+        if (!Application.isPlaying) {
+            UpdateText ();
             return;
         }
 
-        if (!active)
-        {
+        if (!active) {
             return;
         }
 
-        HandleInput();
-        SetCaret();
-        levelsUI.text = GetHighlightedLevelString();
+        HandleInput ();
+        SetCaret ();
+        levelsUI.text = GetHighlightedLevelString ();
     }
 
-    void HandleInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            if (activeLevelBuildIndex != -1)
-            {
-                SceneManager.UnloadSceneAsync(activeLevelBuildIndex);
+    void HandleInput () {
+        if (Input.GetKeyDown (KeyCode.Return)) {
+            if (activeLevelBuildIndex != -1) {
+                SceneManager.UnloadSceneAsync (activeLevelBuildIndex);
                 //SceneManager.UnloadScene(activeLevelBuildIndex);
             }
 
-            if (levelIndex == 0)
-            {
-                FindObjectOfType<VirtualOS>().SetProgram(VirtualOS.Program.Instructions);
-            }
-            else
-            {
+            if (levelIndex == 0) {
+                FindObjectOfType<VirtualOS> ().SetProgram (VirtualOS.Program.Instructions);
+            } else {
                 activeLevelBuildIndex = levelIndex;
-                SceneManager.LoadScene(activeLevelBuildIndex, LoadSceneMode.Additive);
+                SceneManager.LoadScene (activeLevelBuildIndex, LoadSceneMode.Additive);
             }
         }
 
-        if (CustomInput.instance.GetKeyPress(KeyCode.UpArrow))
-        {
-            levelIndex = Mathf.Max(0, levelIndex - 1);
+        if (CustomInput.instance.GetKeyPress (KeyCode.UpArrow)) {
+            levelIndex = Mathf.Max (0, levelIndex - 1);
             lastInputTime = Time.time;
         }
-        if (CustomInput.instance.GetKeyPress(KeyCode.DownArrow))
-        {
+        if (CustomInput.instance.GetKeyPress (KeyCode.DownArrow)) {
             lastInputTime = Time.time;
-            levelIndex = Mathf.Min(levelLines.Length - 1, levelIndex + 1);
+            levelIndex = Mathf.Min (levelLines.Length - 1, levelIndex + 1);
         }
     }
 
-    string GetHighlightedLevelString()
-    {
+    string GetHighlightedLevelString () {
         string highlightedText = "";
-        for (int i = 0; i < levelLines.Length; i++)
-        {
-            if (i == levelIndex)
-            {
-                string colString = ColorUtility.ToHtmlStringRGB(highlightCol);
+        for (int i = 0; i < levelLines.Length; i++) {
+            if (i == levelIndex) {
+                string colString = ColorUtility.ToHtmlStringRGB (highlightCol);
                 highlightedText += $"<color=#{colString}>";
             }
             highlightedText += levelLines[i];
 
-            if (i == levelIndex)
-            {
+            if (i == levelIndex) {
                 highlightedText += "</color>";
             }
-            if (i != levelLines.Length - 1)
-            {
+            if (i != levelLines.Length - 1) {
                 highlightedText += "\n";
             }
         }
         return highlightedText;
     }
 
-    void SetCaret()
-    {
+    void SetCaret () {
         // Blink
         blinkTimer += Time.deltaTime;
-        if (Time.time - lastInputTime < blinkRate / 2)
-        {
+        if (Time.time - lastInputTime < blinkRate / 2) {
             caret.enabled = true;
             blinkTimer = 0;
-        }
-        else
-        {
+        } else {
             caret.enabled = (blinkTimer % blinkRate < blinkRate / 2);
         }
 
         // Place
         string levelsUpToCaret = "";
-        for (int i = 0; i <= levelIndex; i++)
-        {
+        for (int i = 0; i <= levelIndex; i++) {
             levelsUpToCaret += levelLines[i];
-            if (i != levelIndex)
-            {
+            if (i != levelIndex) {
                 levelsUpToCaret += "\n";
             }
         }
@@ -162,4 +134,5 @@ public class TaskSelection : VirtualProgram
         caret.rectTransform.localPosition += Vector3.left * (width + caret.rectTransform.rect.width / 2f);
         caret.rectTransform.localPosition += Vector3.down * (caret.rectTransform.rect.height / 2 + height);
     }
+
 }
