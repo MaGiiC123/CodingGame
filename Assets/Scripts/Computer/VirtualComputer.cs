@@ -20,6 +20,22 @@ public class VirtualComputer : MonoBehaviour
         os = GetComponent<VirtualOS>();
         if (os == null)
             os = gameObject.AddComponent<VirtualOS>();
+
+        
+    }
+
+    void startRunning()
+    {
+        string code = ((VirtualScriptEditor)editor).code;
+        if (useTestCodeForTasks)
+        {
+            code = currentTask.testCode.text;
+            Debug.Log("Running task with test code");
+        }
+        currentTask.StartTask(code);
+        ((VirtualScriptEditor)editor).SetTaskInfo(currentTask.taskInfo);
+
+        SetProgram(Program.Console);
     }
 
     void Update()
@@ -81,21 +97,21 @@ public class VirtualComputer : MonoBehaviour
     void HandleInput()
     {
         // Open code editor
-        if (Input.GetKeyDown(KeyCode.E) && ControlOperatorDown())
+        /*if (Input.GetKeyDown(KeyCode.E) && ControlOperatorDown())
         {
             if (currentProgram == Program.Console)
             {
                 StopTask();
                 SetProgram(Program.Editor);
             }
-        }
+        }*/
 
         // Run code
         if (Input.GetKeyDown(KeyCode.R) && ControlOperatorDown())
         {
             if (currentProgram == Program.Editor)
             {
-                RunTask();
+                startRunning();
             }
         }
 
