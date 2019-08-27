@@ -11,6 +11,7 @@ public class VirtualCompiler
     public Dictionary<string, Func<string, string>> availableFuncsWthP = new Dictionary<string, Func<string, string>>();
     public Dictionary<string, Action> availableFuncsWthoutReturnV = new Dictionary<string, Action>();
 
+    public VirtualComputer vComputer;
     public Dictionary<string, MethodInfo> testingDynamicParams = new Dictionary<string, MethodInfo>();
 
     public const char outputFunctionArgumentSeperator = ':';
@@ -320,6 +321,10 @@ public class VirtualCompiler
 
                     //foreach (object x in VirtualOS.Instance.availableModules) { x.GetType().GetMethod(outputFunctionNames[i]); }
                     Array.ForEach(VirtualOS.Instance.availableModules, x =>
+                    {
+                        outputFunction.delFunc = x.GetType().GetMethod(outputFunctionNames[i], BindingFlags.Public); //TODO: use getmethods and compare
+                    });
+                    Array.ForEach(vComputer.availableModules, x =>
                     {
                         outputFunction.delFunc = x.GetType().GetMethod(outputFunctionNames[i], BindingFlags.Public);
                     });

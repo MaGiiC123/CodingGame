@@ -8,34 +8,35 @@ public class VirtualComputer : MonoBehaviour
     object[] softwareModules;
     object[] hardwareModules;
 
-    VirtualOS os;
+    //TODO: save the code and compiled code on the computer and show the copy in the scripteditors
+    string codeSavedOnComputer;
+
+
+    VirtualScriptEditor editor;
+    VirtualCompiler compiler;
+
+    Task compiledUserCode;
+    GameObject os;
 
     void Awake()
     {
-        SetProgram(currentProgram);
+        _GameMaster._GM.AddComputer(this);
     }
 
     void Start()
     {
-        os = GetComponent<VirtualOS>();
         if (os == null)
-            os = gameObject.AddComponent<VirtualOS>();
+            Debug.Log("Could not find a VirtualOS object!"); //TODO: instantiante a new one
 
-        
+        editor = FindObjectOfType<VirtualScriptEditor>();
     }
 
     void startRunning()
     {
-        string code = ((VirtualScriptEditor)editor).code;
-        if (useTestCodeForTasks)
-        {
-            code = currentTask.testCode.text;
-            Debug.Log("Running task with test code");
-        }
-        currentTask.StartTask(code);
-        ((VirtualScriptEditor)editor).SetTaskInfo(currentTask.taskInfo);
-
-        SetProgram(Program.Console);
+        string code = editor.code;
+        compiler = new VirtualCompiler(code);
+        compiler.vComputer = this;
+        compiler.Run();
     }
 
     void Update()
@@ -45,7 +46,7 @@ public class VirtualComputer : MonoBehaviour
         if (needsUpdate && !Application.isPlaying)
         {
             needsUpdate = false;
-            SetProgram(currentProgram);
+            //SetProgram(currentProgram);
         }
     }
 
@@ -56,43 +57,10 @@ public class VirtualComputer : MonoBehaviour
     //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     public bool useTestCodeForTasks;
 
-    public Camera viewCam;
-    public VirtualProgram taskSelect;
-    public VirtualProgram editor;
-    public VirtualProgram console;
-    public VirtualProgram instructions;
-
-    public enum Program { None, TaskSelect, Editor, Console, Instructions }
-    public Program currentProgram;
-
     bool needsUpdate;
-
-    Task currentTask;
 
     //TODO: put modules classes on startup inhere
     public object[] availableModules;
-    
-    void RunTask()
-    {
-        string code = ((VirtualScriptEditor)editor).code;
-        if (useTestCodeForTasks)
-        {
-            code = currentTask.testCode.text;
-            Debug.Log("Running task with test code");
-        }
-        currentTask.StartTask(code);
-        ((VirtualScriptEditor)editor).SetTaskInfo(currentTask.taskInfo);
-
-        SetProgram(Program.Console);
-    }
-
-    void StopTask()
-    {
-        if (currentTask != null)
-        {
-            currentTask.StopTask();
-        }
-    }
 
     void HandleInput()
     {
@@ -109,20 +77,7 @@ public class VirtualComputer : MonoBehaviour
         // Run code
         if (Input.GetKeyDown(KeyCode.R) && ControlOperatorDown())
         {
-            if (currentProgram == Program.Editor)
-            {
-                startRunning();
-            }
-        }
-
-        // Open task menu
-        if (Input.GetKeyDown(KeyCode.T) && ControlOperatorDown())
-        {
-            if (currentProgram != Program.TaskSelect)
-            {
-                StopTask();
-                SetProgram(Program.TaskSelect);
-            }
+            startRunning();
         }
     }
 
@@ -143,41 +98,6 @@ public class VirtualComputer : MonoBehaviour
         get
         {
             return this.gameObject.activeSelf;
-        }
-    }
-
-    public void RegisterTask(Task task)
-    {
-        this.currentTask = task;
-        this.CopyTargetCamera();
-        this.RunTask();
-    }
-
-    public void SetProgram(Program program)
-    {
-        currentProgram = program;
-        if (taskSelect != null)
-        {
-            taskSelect.SetActive(currentProgram == Program.TaskSelect);
-            editor.SetActive(currentProgram == Program.Editor);
-            console.SetActive(currentProgram == Program.Console);
-            instructions.SetActive(currentProgram == Program.Instructions);
-        }
-    }
-
-    public void CopyTargetCamera()
-    {
-        if (FindObjectOfType<CameraTarget>())
-        {
-            Camera targetCam = FindObjectOfType<CameraTarget>().GetComponent<Camera>();
-            // Copy settings
-            viewCam.transform.position = targetCam.transform.position;
-            viewCam.transform.rotation = targetCam.transform.rotation;
-            viewCam.orthographic = targetCam.orthographic;
-            viewCam.orthographicSize = targetCam.orthographicSize;
-            viewCam.fieldOfView = targetCam.fieldOfView;
-            // Disable
-            targetCam.gameObject.SetActive(false);
         }
     }
 }

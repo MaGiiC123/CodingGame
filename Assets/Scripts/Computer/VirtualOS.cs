@@ -76,13 +76,13 @@ public class VirtualOS : MonoBehaviour
 
         //TODO: just one handleinput loop
         // Run code
-        /*if (Input.GetKeyDown(KeyCode.R) && ControlOperatorDown())
+        if (Input.GetKeyDown(KeyCode.R) && ControlOperatorDown())
         {
             if (currentProgram == Program.Editor)
             {
                 RunTask();
             }
-        }*/
+        }
 
         // Open task menu
         if (Input.GetKeyDown(KeyCode.T) && ControlOperatorDown())
