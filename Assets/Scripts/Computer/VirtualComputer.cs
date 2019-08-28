@@ -20,7 +20,7 @@ public class VirtualComputer : MonoBehaviour
 
     void Awake()
     {
-        _GameMaster._GM.AddComputer(this);
+        //_GameMaster._GM.AddComputer(this);
     }
 
     void Start()
@@ -50,7 +50,7 @@ public class VirtualComputer : MonoBehaviour
         }
     }
 
-    public object[] Hardware{ get; }
+    public object[] Hardware { get; }
     public object[] SoftwareModules { get; }
     public object[] HardwareModules { get; }
 
@@ -60,7 +60,7 @@ public class VirtualComputer : MonoBehaviour
     bool needsUpdate;
 
     //TODO: put modules classes on startup inhere
-    public object[] availableModules;
+    public object[] availableModules = new object[20];
 
     void HandleInput()
     {

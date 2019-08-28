@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -97,6 +98,9 @@ public class HackingGame : MonoBehaviour
             string code = (useTestSolution) ? testCodeSolution.text : testCodeInitial.text;
             code = editor.code;
             VirtualCompiler compiler = new VirtualCompiler(code);
+            VirtualComputer cc = computer.GetComponent<VirtualComputer>();
+            cc.availableModules[0] = turret;
+            compiler.vComputer = cc;
 
             float[] guardSpeed = new float[guards.Length];
             float[] guardPosX = new float[guards.Length];
@@ -131,14 +135,43 @@ public class HackingGame : MonoBehaviour
             compiler.AddInput("turretHeight", turret.muzzle.position.y);
 
             compiler.AddOutputFunction("setAim");
+            compiler.AddOutputFunction("PowerUp");
+            compiler.AddOutputFunction("powerUp");
 
-            var output = compiler.Run();
+            List<VirtualFunction> output = compiler.Run();
+            ExecuteFunctions(output);
+
+            
+            //OLD
             if (output.Count > 0)
             {
-                float aimX = output[0].values[0];
-                float aimY = output[0].values[1];
-
+                float aimX = output[1].values[0];
+                float aimY = output[1].values[1];
                 turret.Aim(aimX, aimY);
+            }
+        }
+    }
+
+    void ExecuteFunctions(List<VirtualFunction> outputs)
+    {
+        if (outputs.Count > 0)
+        {
+            foreach (VirtualFunction vFunc in outputs)
+            {
+                object[] mParams = new object[vFunc.values.Count];
+                Array.Copy(vFunc.values.ToArray(), mParams, vFunc.values.Count);
+                if (vFunc.delFunc != null)
+                {
+                    if(vFunc.values.Count > 1)
+                    {
+                        var xxx = vFunc.delFunc.Invoke(turret, mParams);
+                        Debug.Log(xxx);
+                    }
+                    else
+                    {
+                        vFunc.delFunc.Invoke(turret, null);
+                    }
+                }
             }
         }
     }

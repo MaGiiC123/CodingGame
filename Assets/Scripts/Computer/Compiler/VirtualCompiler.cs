@@ -320,13 +320,21 @@ public class VirtualCompiler
                     //Task tt = new Task(); //outputFunction.delFunc = /*class_instance_to_call_here.*/tt.GetType().GetMethod(outputFunctionNames[i]);
 
                     //foreach (object x in VirtualOS.Instance.availableModules) { x.GetType().GetMethod(outputFunctionNames[i]); }
-                    Array.ForEach(VirtualOS.Instance.availableModules, x =>
+                    /*Array.ForEach(VirtualOS.Instance.availableModules, x =>
                     {
                         outputFunction.delFunc = x.GetType().GetMethod(outputFunctionNames[i], BindingFlags.Public); //TODO: use getmethods and compare
-                    });
+                    });*/
                     Array.ForEach(vComputer.availableModules, x =>
                     {
-                        outputFunction.delFunc = x.GetType().GetMethod(outputFunctionNames[i], BindingFlags.Public);
+                        if (x != null)
+                        {
+                            outputFunction.delFunc = x.GetType().GetMethod(outputFunctionNames[i]);
+                            //Debug.Log(outputFunctionNames[i] + x);
+                        }
+                        else
+                        {
+                            //Debug.Log("No available functions");
+                        }
                     });
 
                     if (outputFunction.values.Count <= 1)

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HackingTurret : MonoBehaviour {
+public class HackingTurret : MonoBehaviour
+{
     public Transform muzzle;
     public HackingBullet missilePrefab;
     public Transform swivel;
@@ -16,46 +17,66 @@ public class HackingTurret : MonoBehaviour {
     float aimError;
     bool aimed;
 
-    public void Reset () {
+    public void Reset()
+    {
         swivel.rotation = Quaternion.identity;
         lastShotTime = time;
     }
 
-    void Update () {
-        if (active && aimed) {
+    void Update()
+    {
+        if (active && aimed)
+        {
             time += Time.deltaTime;
-            if (time > lastShotTime + timeBetweenShots && aimError < 2) {
+            if (time > lastShotTime + timeBetweenShots && aimError < 2)
+            {
                 lastShotTime = time;
-                Shoot ();
+                Shoot();
             }
 
             RaycastHit hit;
-            if (Physics.Raycast (muzzle.position, muzzle.forward * 100, out hit, targetMask)) {
-                Debug.DrawLine (muzzle.position, hit.point, Color.red);
+            if (Physics.Raycast(muzzle.position, muzzle.forward * 100, out hit, targetMask))
+            {
+                Debug.DrawLine(muzzle.position, hit.point, Color.red);
             }
         }
 
         aimed = false;
     }
 
-    void Shoot () {
-        var b = Instantiate (missilePrefab, muzzle.position, muzzle.rotation);
-        StartCoroutine (AnimShot ());
+    void Shoot()
+    {
+        var b = Instantiate(missilePrefab, muzzle.position, muzzle.rotation);
+        StartCoroutine(AnimShot());
     }
 
-    IEnumerator AnimShot () {
-        muzzle.gameObject.SetActive (true);
-        yield return new WaitForSeconds (0.1f);
-        muzzle.gameObject.SetActive (false);
+    IEnumerator AnimShot()
+    {
+        muzzle.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.1f);
+        muzzle.gameObject.SetActive(false);
     }
 
-    public void Aim (float x, float z) {
-        Vector3 aim = new Vector3 (x, 0, z);
-        Quaternion lookRot = Quaternion.LookRotation ((aim - swivel.position).normalized, Vector3.up);
-        swivel.rotation = Quaternion.Slerp (swivel.rotation, lookRot, Time.deltaTime * smoothRot);
-        aimError = Quaternion.Angle (swivel.rotation, lookRot);
+    public void Aim(float x, float z)
+    {
+        Vector3 aim = new Vector3(x, 0, z);
+        Quaternion lookRot = Quaternion.LookRotation((aim - swivel.position).normalized, Vector3.up);
+        swivel.rotation = Quaternion.Slerp(swivel.rotation, lookRot, Time.deltaTime * smoothRot);
+        aimError = Quaternion.Angle(swivel.rotation, lookRot);
         //swivel.LookAt (aim);
         //print(aimError);
         aimed = true;
+    }
+
+    public void PowerUp()
+    {
+        Debug.Log("POWERED UP!");
+        timeBetweenShots = .5f;
+    }
+
+    public void powerUp(float _val)
+    {
+        Debug.Log("powered up!");
+        timeBetweenShots = _val;
     }
 }
