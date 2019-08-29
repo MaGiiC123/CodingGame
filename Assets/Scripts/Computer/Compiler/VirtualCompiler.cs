@@ -88,18 +88,19 @@ public class VirtualCompiler
     List<string> outputFunctionNames;
     List<VirtualFunction> outputs;
 
-    public VirtualCompiler(string code)
+    public VirtualCompiler(string _code)
     {
-        if (code == null)
-        {
-            code = "";
-        }
+        if (_code == null)
+            this.code = "";
+        else
+            code = _code;
+
         variables = new Dictionary<string, float>();
         conditionByLineIndex = new Dictionary<int, ConditionBlockInfo>();
         outputFunctionNames = new List<string>();
         outputs = new List<VirtualFunction>();
 
-        PreprocessCode(code);
+        PreprocessCode(this.code);
     }
 
     // Set input arguments to the code
@@ -296,7 +297,8 @@ public class VirtualCompiler
         {
             for (int i = 0; i < outputFunctionNames.Count; i++)
             {
-                if (sections[0] == outputFunctionNames[i].ToLower())
+                //TODO: fix tolower cases etc.
+                if (sections[0] == outputFunctionNames[i].ToLower()) //((sections[0].Equals(outputFunctionNames[i])))
                 {
                     VirtualFunction outputFunction = new VirtualFunction() { name = outputFunctionNames[i] };
 

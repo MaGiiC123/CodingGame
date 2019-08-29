@@ -57,26 +57,24 @@ public class HackingTurret : MonoBehaviour
         muzzle.gameObject.SetActive(false);
     }
 
-    public void Aim(float x, float z)
+    public void setAim(float x, float z)
     {
         Vector3 aim = new Vector3(x, 0, z);
         Quaternion lookRot = Quaternion.LookRotation((aim - swivel.position).normalized, Vector3.up);
         swivel.rotation = Quaternion.Slerp(swivel.rotation, lookRot, Time.deltaTime * smoothRot);
         aimError = Quaternion.Angle(swivel.rotation, lookRot);
-        //swivel.LookAt (aim);
-        //print(aimError);
         aimed = true;
     }
 
     public void PowerUp()
     {
-        Debug.Log("POWERED UP!");
+        //Debug.Log("POWERED UP!");
         timeBetweenShots = .5f;
     }
 
     public void powerUp(float _val)
     {
-        Debug.Log("powered up!");
+        //Debug.Log("powered up!");
         timeBetweenShots = _val;
     }
 }

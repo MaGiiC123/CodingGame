@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class HackingGame : MonoBehaviour
 {
-
     public TextAsset testCodeInitial;
     public TextAsset testCodeSolution;
     public bool useTestSolution;
@@ -143,12 +142,12 @@ public class HackingGame : MonoBehaviour
 
             
             //OLD
-            if (output.Count > 0)
+            /*if (output.Count > 0)
             {
                 float aimX = output[1].values[0];
                 float aimY = output[1].values[1];
-                turret.Aim(aimX, aimY);
-            }
+                turret.setAim(aimX, aimY);
+            }*/
         }
     }
 
@@ -164,8 +163,9 @@ public class HackingGame : MonoBehaviour
                 {
                     if(vFunc.values.Count > 1)
                     {
+                        //TODO: return the return value if not null
                         var xxx = vFunc.delFunc.Invoke(turret, mParams);
-                        Debug.Log(xxx);
+                        //Debug.Log(xxx); 
                     }
                     else
                     {
