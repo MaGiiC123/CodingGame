@@ -38,6 +38,8 @@ public class VirtualCompiler
         "or"
     };
 
+    public static readonly string[] booleanOperators = { "true", "false" };
+
     public static readonly string[] comparisonOperators = {
         "and",
         "or",

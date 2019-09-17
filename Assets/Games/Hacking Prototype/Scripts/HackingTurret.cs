@@ -77,4 +77,9 @@ public class HackingTurret : MonoBehaviour
         //Debug.Log("powered up!");
         timeBetweenShots = _val;
     }
+
+    public void setInactive(bool b)
+    {
+        active = b;
+    }
 }

@@ -135,7 +135,7 @@ public class HackingGame : MonoBehaviour
 
             compiler.AddOutputFunction("setAim");
             compiler.AddOutputFunction("PowerUp");
-            compiler.AddOutputFunction("powerUp");
+            compiler.AddOutputFunction("setInactive");
 
             List<VirtualFunction> output = compiler.Run();
             ExecuteFunctions(output);
@@ -172,6 +172,7 @@ public class HackingGame : MonoBehaviour
                         vFunc.delFunc.Invoke(turret, null);
                     }
                 }
+                //Array.Clear(mParams, 0, mParams.Length);
             }
         }
     }
