@@ -117,8 +117,8 @@ public class Task : MonoBehaviour
         {
             foreach (VirtualFunction vFunc in outputs)
             {
-                object[] mParams = new object[vFunc.values.Count];
-                Array.Copy(vFunc.values.ToArray(), mParams, vFunc.values.Count);
+                //object[] mParams = new object[vFunc.values.Count];
+                //Array.Copy(vFunc.values.ToArray(), mParams, vFunc.values.Count);
                 if (vFunc.delFunc != null)
                     vFunc.delFunc.Invoke(this, null);
 
@@ -137,9 +137,9 @@ public class Task : MonoBehaviour
             }
 
             float val = 0;
-            if (outputs[0].values.Count > 0)
+            if (outputs[0].values.Count > 0 && outputs[0].values[0] is float)
             {
-                val = outputs[0].values[0];
+                val = (float)outputs[0].values[0];
             }
             var func = new Function() { name = outputs[0].name, value = val };
             outputQueue.Enqueue(func);

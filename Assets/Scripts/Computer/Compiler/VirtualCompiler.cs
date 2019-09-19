@@ -311,6 +311,18 @@ public class VirtualCompiler
                     //TODO: provide the functions from modules in the virtualOS
                     for (int j = 0; j < argumentSections.Length; j++)
                     {
+                        //true or false as parameter for a function
+                        if(string.Equals( argumentSections[j].Trim(' '), "true"))
+                        {
+                            outputFunction.values.Add(true);
+                            break;
+                        }
+                        if (string.Equals(argumentSections[j].Trim(' '), "false"))
+                        {
+                            outputFunction.values.Add(false);
+                            break;
+                        }
+
                         var valueString = new ValueString(argumentSections[j], variables); //TODO: accept T value as func parameter
                         float value = new NumericalExpression(valueString).Evaluate();
                         outputFunction.values.Add(value);
@@ -333,7 +345,6 @@ public class VirtualCompiler
                         if (x != null)
                         {
                             outputFunction.delFunc = x.GetType().GetMethod(outputFunctionNames[i]);
-                            //Debug.Log(outputFunctionNames[i] + x);
                         }
                         else
                         {
@@ -695,8 +706,9 @@ public class VirtualCompiler
 public class VirtualFunction
 {
     public string name = "";
-    public List<float> values = new List<float>();
+    public List<object> values = new List<object>();
+    public MethodInfo delFunc;
+
     public Func<string, string> FunctionWithParam;
     public Action FunctionWithoutParam;
-    public MethodInfo delFunc;
 }

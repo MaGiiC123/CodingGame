@@ -134,7 +134,7 @@ public class HackingGame : MonoBehaviour
             compiler.AddInput("turretHeight", turret.muzzle.position.y);
 
             compiler.AddOutputFunction("setAim");
-            compiler.AddOutputFunction("PowerUp");
+            compiler.AddOutputFunction("powerUp");
             compiler.AddOutputFunction("setInactive");
 
             List<VirtualFunction> output = compiler.Run();
@@ -158,21 +158,23 @@ public class HackingGame : MonoBehaviour
             foreach (VirtualFunction vFunc in outputs)
             {
                 object[] mParams = new object[vFunc.values.Count];
-                Array.Copy(vFunc.values.ToArray(), mParams, vFunc.values.Count);
+                for(int i = 0; i <= mParams.Length - 1; i++)
+                {
+                    mParams[i] = vFunc.values[i];
+                }
+                
                 if (vFunc.delFunc != null)
                 {
-                    if(vFunc.values.Count > 1)
+                    if(vFunc.values.Count != 0)
                     {
                         //TODO: return the return value if not null
                         var xxx = vFunc.delFunc.Invoke(turret, mParams);
-                        //Debug.Log(xxx); 
                     }
                     else
                     {
                         vFunc.delFunc.Invoke(turret, null);
                     }
                 }
-                //Array.Clear(mParams, 0, mParams.Length);
             }
         }
     }

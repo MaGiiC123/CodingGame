@@ -66,16 +66,14 @@ public class HackingTurret : MonoBehaviour
         aimed = true;
     }
 
-    public void PowerUp()
-    {
-        //Debug.Log("POWERED UP!");
-        timeBetweenShots = .5f;
-    }
+    
 
     public void powerUp(float _val)
     {
         //Debug.Log("powered up!");
-        timeBetweenShots = _val;
+        //timeBetweenShots = _val;
+
+        timeBetweenShots = 1 / _val;
     }
 
     public void setInactive(bool b)
